@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BFS & DFS Visualizer (Integer Graph)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f4f4f4; }
+    pre { background: #e9ecef; padding: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body class="container py-5">
+
+  <h2 class="text-center mb-4">BFS & DFS for Integer Graph</h2>
+
+  <!-- Add Edge Section -->
+  <div class="card p-3 mb-4">
+    <h5>Add Edge</h5>
+    <div class="row">
+      <div class="col-md-6 mb-2">
+        <input type="number" id="node" class="form-control" placeholder="Enter Node (Integer)">
+      </div>
+      <div class="col-md-6 mb-2">
+        <input type="number" id="edgeNode" class="form-control" placeholder="Enter Connected Node">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addEdge()">Add Edge</button>
+  </div>
+
+  <!-- Start Node Input -->
+  <div class="card p-3 mb-4">
+    <h5>Start Traversal</h5>
+    <input type="number" id="startNode" class="form-control mb-2" placeholder="Enter Start Node">
+    <button class="btn btn-success me-2" onclick="performBFS()">Perform BFS</button>
+    <button class="btn btn-warning" onclick="performDFS()">Perform DFS</button>
+  </div>
+
+  <!-- Adjacency List -->
+  <div class="card p-3 mb-4">
+    <h5>Adjacency List</h5>
+    <pre id="adjacencyList">Graph is empty</pre>
+  </div>
+
+  <!-- Result Sections -->
+  <div class="card p-3 mb-3">
+    <h5>BFS Result:</h5>
+    <div id="bfsResult" class="alert alert-success"></div>
+  </div>
+
+  <div class="card p-3 mb-5">
+    <h5>DFS Result:</h5>
+    <div id="dfsResult" class="alert alert-warning"></div>
+  </div>
+
+  <!-- JS Code -->
+  <script>
+    const graph = {};
+
+    function addEdge() {
+      const u = parseInt(document.getElementById("node").value);
+      const v = parseInt(document.getElementById("edgeNode").value);
+
+      if (!graph[u]) graph[u] = [];
+      if (!graph[v]) graph[v] = [];
+
+      graph[u].push(v);
+      graph[v].push(u); // undirected
+
+      displayGraph();
+      document.getElementById("node").value = "";
+      document.getElementById("edgeNode").value = "";
+    }
+
+    function displayGraph() {
+      const output = Object.keys(graph).map(
+        key => `${key}: ${graph[key].join(", ")}`
+      ).join("\n");
+      document.getElementById("adjacencyList").textContent = output || "Graph is empty";
+    }
+
+    function performBFS() {
+      const start = parseInt(document.getElementById("startNode").value);
+      const visited = new Set();
+      const queue = [start];
+      const result = [];
+
+      while (queue.length) {
+        const node = queue.shift();
+        if (!visited.has(node)) {
+          visited.add(node);
+          result.push(node);
+          for (let neighbor of graph[node] || []) {
+            if (!visited.has(neighbor)) {
+              queue.push(neighbor);
+            }
+          }
+        }
+      }
+
+      document.getElementById("bfsResult").innerText = result.length ? result.join(" → ") : "Invalid Start Node";
+    }
+
+    function performDFS() {
+      const start = parseInt(document.getElementById("startNode").value);
+      const visited = new Set();
+      const result = [];
+
+      function dfs(node) {
+        if (!node || visited.has(node)) return;
+        visited.add(node);
+        result.push(node);
+        for (let neighbor of graph[node] || []) {
+          dfs(neighbor);
+        }
+      }
+
+      dfs(start);
+      document.getElementById("dfsResult").innerText = result.length ? result.join(" → ") : "Invalid Start Node";
+    }
+  </script>
+
+</body>
+</html>
