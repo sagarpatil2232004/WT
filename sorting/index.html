@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tree Search and Sort - JavaScript</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #f0f8ff;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+    .output {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Tree-Based Search & Sort (JavaScript)</h2>
+
+  <input type="number" id="numInput" placeholder="Enter integer">
+  <button onclick="insert()">Insert</button>
+  <button onclick="search()">Search</button>
+  <button onclick="showInorder()">Show Sorted (Inorder)</button>
+
+  <div class="output" id="result"></div>
+
+  <script>
+    // Node class
+    class Node {
+      constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+      }
+    }
+
+    // Binary Search Tree class
+    class BST {
+      constructor() {
+        this.root = null;
+      }
+
+      insert(data) {
+        this.root = this._insertRec(this.root, data);
+      }
+
+      _insertRec(root, data) {
+        if (root === null) return new Node(data);
+        if (data < root.data) root.left = this._insertRec(root.left, data);
+        else if (data > root.data) root.right = this._insertRec(root.right, data);
+        return root;
+      }
+
+      search(data) {
+        return this._searchRec(this.root, data);
+      }
+
+      _searchRec(root, data) {
+        if (root === null) return false;
+        if (root.data === data) return true;
+        if (data < root.data) return this._searchRec(root.left, data);
+        else return this._searchRec(root.right, data);
+      }
+
+      inorder() {
+        let result = [];
+        this._inorderRec(this.root, result);
+        return result;
+      }
+
+      _inorderRec(node, result) {
+        if (node) {
+          this._inorderRec(node.left, result);
+          result.push(node.data);
+          this._inorderRec(node.right, result);
+        }
+      }
+    }
+
+    // Global BST object
+    const tree = new BST();
+
+    // DOM functions
+    function insert() {
+      const val = parseInt(document.getElementById("numInput").value);
+      if (!isNaN(val)) {
+        tree.insert(val);
+        document.getElementById("result").innerText = `Inserted: ${val}`;
+        document.getElementById("numInput").value = '';
+      }
+    }
+
+    function search() {
+      const val = parseInt(document.getElementById("numInput").value);
+      const found = tree.search(val);
+      document.getElementById("result").innerText = found
+        ? `✅ Found: ${val}`
+        : `❌ Not Found: ${val}`;
+    }
+
+    function showInorder() {
+      const sorted = tree.inorder();
+      document.getElementById("result").innerText = `🔢 Sorted Order: ${sorted.join(", ")}`;
+    }
+  </script>
+</body>
+</html>

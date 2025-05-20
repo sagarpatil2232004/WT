@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VIT Projects - Course & EDI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="p-4">
+
+  <h2 class="text-center mb-4">VIT Projects Portal</h2>
+
+  <!-- Tabs -->
+  <ul class="nav nav-pills mb-3 justify-content-center" id="projectTabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="pill" href="#course">Course Projects</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="pill" href="#edi">EDI Projects</a>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Course Projects Tab -->
+    <div id="course" class="tab-pane fade show active">
+      <h4>Course Projects</h4>
+      <form id="courseForm" class="mb-3">
+        <input type="text" id="courseTitle" placeholder="Project Title" class="form-control mb-2" required>
+        <input type="text" id="courseDesc" placeholder="Project Description" class="form-control mb-2" required>
+        <button type="submit" class="btn btn-primary">Add Course Project</button>
+      </form>
+      <ul id="courseList" class="list-group"></ul>
+    </div>
+
+    <!-- EDI Projects Tab -->
+    <div id="edi" class="tab-pane fade">
+      <h4>EDI Projects</h4>
+      <form id="ediForm" class="mb-3">
+        <input type="text" id="ediTitle" placeholder="Project Title" class="form-control mb-2" required>
+        <input type="text" id="ediDesc" placeholder="Project Description" class="form-control mb-2" required>
+        <button type="submit" class="btn btn-success">Add EDI Project</button>
+      </form>
+      <ul id="ediList" class="list-group"></ul>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (for pills functionality) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Load from localStorage
+    function loadProjects(type) {
+      const data = JSON.parse(localStorage.getItem(type)) || [];
+      const list = $('#' + type + 'List');
+      list.empty();
+      data.forEach((item, index) => {
+        list.append(`<li class="list-group-item">${item.title}: ${item.desc}</li>`);
+      });
+    }
+
+    // Save project to localStorage
+    function saveProject(type, title, desc) {
+      const data = JSON.parse(localStorage.getItem(type)) || [];
+      data.push({ title, desc });
+      localStorage.setItem(type, JSON.stringify(data));
+      loadProjects(type);
+    }
+
+    // Handlers
+    $('#courseForm').on('submit', function (e) {
+      e.preventDefault();
+      const title = $('#courseTitle').val();
+      const desc = $('#courseDesc').val();
+      saveProject('course', title, desc);
+      this.reset();
+    });
+
+    $('#ediForm').on('submit', function (e) {
+      e.preventDefault();
+      const title = $('#ediTitle').val();
+      const desc = $('#ediDesc').val();
+      saveProject('edi', title, desc);
+      this.reset();
+    });
+
+    // Initial load
+    $(document).ready(function () {
+      loadProjects('course');
+      loadProjects('edi');
+    });
+  </script>
+</body>
+</html>
